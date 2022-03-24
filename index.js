@@ -8,6 +8,9 @@ const spotifyWebApi = require("spotify-web-api-node");
 app.use(cors());
 app.use(express.json());
 
+const path = require("path");
+app.use(express.static(path.join(__dirname, "build")));
+
 app.post("/refresh", (req, res) => {
   const refreshToken = req.body.refreshToken;
   const spotifyApi = new spotifyWebApi({
@@ -48,6 +51,9 @@ app.post("/login", (req, res) => {
     });
 });
 
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 app.listen(PORT, () => {
   console.log(`App is up on ${PORT}`);
 });
