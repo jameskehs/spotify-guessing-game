@@ -1,0 +1,103 @@
+.PlayerRSWP {
+  display: none;
+}
+
+#main-game {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100vw;
+}
+
+#play-song-btn {
+  background-color: #1ed760;
+  border: none;
+  border-radius: 100%;
+  height: 175px;
+  width: 175px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  will-change: transform;
+  margin-bottom: 3rem;
+}
+
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  90% {
+    -webkit-transform: rotate(365deg);
+            transform: rotate(365deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  90% {
+    -webkit-transform: rotate(365deg);
+            transform: rotate(365deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+#play-song-btn img {
+  height: 75px;
+  width: 75px;
+  margin-left: 10px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#play-song-btn:hover {
+  background-color: #1ab952;
+  cursor: pointer;
+}
+
+#guess-input {
+  border: none;
+  padding: 25px;
+  width: 500px;
+  font-size: 26px;
+  background-color: #eee;
+}
+
+#submit-guess {
+  background-color: #1ed760;
+  padding: 25px;
+  color: #fff;
+  font-size: 26px;
+  border: none;
+}
+
+#submit-guess:hover {
+  background-color: #1ab952;
+  cursor: pointer;
+}
+/*# sourceMappingURL=dashboard.css.map */

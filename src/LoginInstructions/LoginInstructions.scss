@@ -1,0 +1,14 @@
+#login-instructions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+
+  p {
+    font-size: 20px;
+    margin: 10px;
+    width: 50%;
+    text-align: center;
+  }
+}

@@ -1,0 +1,22 @@
+nav {
+  background-color: black;
+  padding: 25px 50px;
+  margin-bottom: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+nav a:hover {
+  color: #42d760;
+}
+/*# sourceMappingURL=Nav.css.map */

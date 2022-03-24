@@ -1,0 +1,65 @@
+.PlayerRSWP {
+  display: none;
+}
+
+#main-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+}
+
+#play-song-btn {
+  background-color: #1ed760;
+  border: none;
+  border-radius: 100%;
+  height: 175px;
+  width: 175px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform;
+  margin-bottom: 3rem;
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    90% {
+      transform: rotate(365deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  img {
+    height: 75px;
+    width: 75px;
+    margin-left: 10px;
+    user-select: none;
+  }
+
+  &:hover {
+    background-color: #1ab952;
+    cursor: pointer;
+  }
+}
+
+#guess-input {
+  border: none;
+  padding: 25px;
+  width: 500px;
+  font-size: 26px;
+  background-color: #eee;
+}
+
+#submit-guess {
+  background-color: #1ed760;
+  padding: 25px;
+  color: #fff;
+  font-size: 26px;
+  border: none;
+  &:hover {
+    background-color: #1ab952;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,25 @@
+#attempts-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-top: 25px;
+}
+
+.guess {
+  margin: 0 5px;
+  background-color: #eee;
+  height: 25px;
+  width: 75px;
+}
+
+.guess.wrong {
+  background-color: #ff2828;
+}
+
+.guess.correct {
+  background-color: #1cb31c;
+}
+/*# sourceMappingURL=AttemptCounter.css.map */
