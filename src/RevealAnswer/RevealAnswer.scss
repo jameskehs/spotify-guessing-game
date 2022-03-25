@@ -1,0 +1,32 @@
+#reveal-answer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 750ms ease-in forwards;
+  transform: translatey(120px);
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    33% {
+      transform: translateY(-5px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+    66% {
+      transform: translateY(15px);
+    }
+    82% {
+      transform: translateY(-7px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+  img {
+    height: 250px;
+    width: 250px;
+  }
+}

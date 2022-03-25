@@ -100,4 +100,30 @@
   background-color: #1ab952;
   cursor: pointer;
 }
+
+#restart-game-container {
+  margin-top: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#restart-game-container #restart-game-btn {
+  background-color: #1ed760;
+  width: 175px;
+  height: 50px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 20px;
+  margin: 0 auto;
+}
+
+#restart-game-container #restart-game-btn:hover {
+  background-color: #1ab952;
+  cursor: pointer;
+}
 /*# sourceMappingURL=dashboard.css.map */

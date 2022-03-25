@@ -1,11 +1,11 @@
 import "./AttemptCounter.css";
 
 const AttemptCounter = ({ allGuesses }) => {
-  console.log(allGuesses);
   return (
     <div id="attempts-container">
-      {allGuesses.map((guess) => {
-        return <div className={`guess ${guess.correct}`}></div>;
+      {allGuesses.map((guess, index) => {
+        if (index > 4) return "";
+        return <div key={index} className={`guess ${guess.correct}`}></div>;
       })}
     </div>
   );

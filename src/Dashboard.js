@@ -1,20 +1,24 @@
 import { useEffect, useState, useRef } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
-import SpotifyPlayer from "react-spotify-web-playback";
 import AttemptCounter from "./AttemptCounter/AttemptCounter";
 import "./dashboard.css";
+import GuessForm from "./GuessForm/GuessForm";
+import Player from "./Player/Player";
+import RevealAnswer from "./RevealAnswer/RevealAnswer";
 const spotifyApi = new SpotifyWebApi({
   clientId: "b19ba0b304904f03862cf481cc44f169",
 });
 
 const Dashboard = ({ accessToken }) => {
   const [selectedTrack, setSelectedTrack] = useState({});
-  const [isPlaying, setIsPlaying] = useState(false);
   const [allGuesses, setAllGuesses] = useState([{}, {}, {}, {}, {}]);
   const [attempt, setAttempt] = useState(0);
   const [trackTime, setTrackTime] = useState(2500);
   const [guess, setGuess] = useState("");
-  const [gameOver, setGameOver] = useState(false);
+  const [gameStatus, setGameStatus] = useState({
+    isOver: false,
+    didWin: false,
+  });
 
   //Get random track from users library
   useEffect(() => {
@@ -30,95 +34,68 @@ const Dashboard = ({ accessToken }) => {
         .then((res) => setSelectedTrack(res.body.items[0].track));
     });
   }, [accessToken]);
-  //Start/stop animation on play button
-  useEffect(() => {
-    if (isPlaying) {
-      const button = document.getElementById("play-song-btn");
-      button.style.setProperty(
-        "animation",
-        `rotate ${trackTime}ms ease-in-out forwards`
-      );
-      button.style.setProperty("pointer-events", "none");
-      button.addEventListener("animationend", () => {
-        button.style.removeProperty("animation");
-        button.style.removeProperty("pointer-events");
-      });
-    }
-  }, [isPlaying]);
+
   //Removes all punctuation, spacing, and lowercases guess AND correct answer then compares
   function submitGuess() {
     let correctAnswer = selectedTrack.name
-      .replace(/[.,\/#!$%\^&\*;:{}=\-_'`~ ]/g, "")
+      .replace(/[\.,\/#!$%\^&\*;:{}=\-_'’`~ ]/g, "")
       .replace(/\s*\(.*?\)\s*/g, "")
       .toLowerCase();
     let formattedGuess = guess
-      .replace(/[.,\/#!$%\^&\*;:{}=\-_'`~ ]/g, "")
+      .replace(/[\.,\/#!$%\^&\*;:{}=\-_'’`~ ]/g, "")
       .replace(/\s*\(.*?\)\s*/g, "")
       .toLowerCase();
-    console.log(correctAnswer);
     const newGuesses = [...allGuesses];
-
+    setGuess("");
     if (formattedGuess === correctAnswer) {
-      alert("You win!");
       newGuesses[attempt] = { guess, correct: "correct" };
       setAllGuesses(newGuesses);
-      setAttempt(attempt + 1);
-      setGameOver(true);
+      setGameStatus({ isOver: true, didWin: true });
     } else {
-      setTrackTime(trackTime + 1500);
+      setTrackTime(trackTime + (attempt + 1) * 750);
       newGuesses[attempt] = { guess, correct: "wrong" };
       setAttempt(attempt + 1);
 
-      if (attempt >= 5) {
-        setGameOver(true);
-        return;
+      if (attempt === 4) {
+        setTimeout(() => {
+          setGameStatus({ isOver: true, didWin: false });
+          return;
+        }, 500);
       }
       setAllGuesses(newGuesses);
-      alert("Try again!");
     }
   }
-
   return (
-    selectedTrack !== undefined &&
-    !gameOver && (
-      <div id="main-game">
-        <button
-          id="play-song-btn"
-          onClick={() => {
-            setIsPlaying(true);
-            setTimeout(() => {
-              setIsPlaying(false);
-            }, trackTime);
-          }}
-        >
-          <img src="./Img/play-button.png" alt="Play Button" />
-        </button>
-        {isPlaying && (
-          <SpotifyPlayer
-            name="Spotify Guessing Game"
-            token={accessToken}
-            uris={[selectedTrack.uri]}
-            autoPlay={true}
+    <>
+      {selectedTrack !== undefined && !gameStatus.isOver && (
+        <div id="main-game">
+          <Player
+            accessToken={accessToken}
+            trackTime={trackTime}
+            selectedTrack={selectedTrack}
           />
-        )}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            submitGuess();
-          }}
-        >
-          <input
-            id="guess-input"
-            type="text"
-            placeholder="What is the song?"
-            value={guess}
-            onChange={(e) => setGuess(e.target.value)}
+          <GuessForm
+            submitGuess={submitGuess}
+            guess={guess}
+            setGuess={setGuess}
           />
-          <button id="submit-guess">Guess</button>
-        </form>
-        <AttemptCounter allGuesses={allGuesses} />
-      </div>
-    )
+        </div>
+      )}
+      {gameStatus.isOver && (
+        <RevealAnswer selectedTrack={selectedTrack} accessToken={accessToken} />
+      )}
+      {/* {gameStatus.isOver && gameStatus.didWin && <WinScreen/>}
+      {gameStatus.isOver && !gameStatus.didWin && <LoseScreen/>}
+ */}
+      <AttemptCounter allGuesses={allGuesses} />
+      {gameStatus.isOver && (
+        <div id="restart-game-container">
+          <button id="restart-game-btn" onClick={() => (window.location = "/")}>
+            Play Again
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 

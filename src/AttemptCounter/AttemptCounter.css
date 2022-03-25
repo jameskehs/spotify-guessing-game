@@ -13,13 +13,64 @@
   background-color: #eee;
   height: 25px;
   width: 75px;
+  border-radius: 15px;
+}
+
+@-webkit-keyframes wiggle {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  25% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  50% {
+    -webkit-transform: rotate(10deg);
+            transform: rotate(10deg);
+  }
+  90% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+
+@keyframes wiggle {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  25% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  50% {
+    -webkit-transform: rotate(10deg);
+            transform: rotate(10deg);
+  }
+  90% {
+    -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
 }
 
 .guess.wrong {
   background-color: #ff2828;
+  -webkit-animation: wiggle 300ms ease-in-out forwards;
+          animation: wiggle 300ms ease-in-out forwards;
 }
 
 .guess.correct {
   background-color: #1cb31c;
+  -webkit-animation: wiggle 300ms ease-in-out forwards;
+          animation: wiggle 300ms ease-in-out forwards;
 }
 /*# sourceMappingURL=AttemptCounter.css.map */
