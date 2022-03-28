@@ -6,19 +6,21 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  padding: 25px;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 25px;
+}
+
+#login-instructions h1 {
+  text-align: center;
 }
 
 #login-instructions p {
   font-size: 20px;
-  margin: 10px;
-  width: 50%;
+  margin: 10px 0;
+  max-width: 500px;
+  width: 90%;
   text-align: center;
 }
 /*# sourceMappingURL=LoginInstructions.css.map */
