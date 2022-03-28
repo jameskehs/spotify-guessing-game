@@ -57,7 +57,7 @@ const Player = ({ accessToken, trackTime, selectedTrack }) => {
         }
       );
     };
-
+    player.activateElement();
     play({
       playerInstance: new window.Spotify.Player({ name: "Guessing Game" }),
       spotify_uri: selectedTrack.uri,
