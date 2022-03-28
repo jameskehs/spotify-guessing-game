@@ -1,6 +1,7 @@
 const GuessForm = ({ guess, setGuess, submitGuess }) => {
   return (
     <form
+      id="guess-form"
       onSubmit={(e) => {
         e.preventDefault();
         submitGuess();

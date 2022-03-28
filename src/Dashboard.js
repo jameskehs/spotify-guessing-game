@@ -19,7 +19,7 @@ const Dashboard = ({ accessToken }) => {
     isOver: false,
     didWin: false,
   });
-
+  console.log(selectedTrack);
   //Get random track from users library
   useEffect(() => {
     if (!accessToken) return;

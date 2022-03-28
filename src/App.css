@@ -5,4 +5,9 @@
           box-sizing: border-box;
   font-family: "Ubuntu";
 }
+
+html,
+body {
+  width: 100vw;
+}
 /*# sourceMappingURL=App.css.map */

@@ -1,7 +1,3 @@
-.PlayerRSWP {
-  display: none;
-}
-
 #main-game {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -80,10 +76,19 @@
   cursor: pointer;
 }
 
+#guess-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
 #guess-input {
   border: none;
   padding: 25px;
-  width: 500px;
   font-size: 26px;
   background-color: #eee;
 }
@@ -125,5 +130,25 @@
 #restart-game-container #restart-game-btn:hover {
   background-color: #1ab952;
   cursor: pointer;
+}
+
+@media screen and (max-width: 750px) {
+  #guess-form {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    width: 80%;
+  }
+  #guess-form #guess-input {
+    text-align: center;
+    width: 100%;
+  }
+  #guess-form #submit-guess {
+    width: 100%;
+  }
 }
 /*# sourceMappingURL=dashboard.css.map */
