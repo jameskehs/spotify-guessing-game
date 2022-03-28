@@ -24,6 +24,7 @@ const Dashboard = ({ accessToken }) => {
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
+
     spotifyApi.getMySavedTracks({ limit: 1 }).then((res) => {
       const totalTracks = res.body.total;
       spotifyApi

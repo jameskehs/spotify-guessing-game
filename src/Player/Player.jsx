@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 const Player = ({ accessToken, trackTime, selectedTrack }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [player, setPlayer] = useState(undefined);
-  const [is_paused, setPaused] = useState(false);
-  const [is_active, setActive] = useState(false);
   const [device_id, setDeviceID] = useState("");
+  const [playerReady, setPlayerReady] = useState(false);
   console.log(selectedTrack);
   useEffect(() => {
     const script = document.createElement("script");
@@ -28,6 +27,7 @@ const Player = ({ accessToken, trackTime, selectedTrack }) => {
       player.addListener("ready", ({ device_id }) => {
         setDeviceID(device_id);
         console.log("Ready with Device ID", device_id);
+        setPlayerReady(true);
       });
 
       player.addListener("not_ready", ({ device_id }) => {
@@ -82,19 +82,21 @@ const Player = ({ accessToken, trackTime, selectedTrack }) => {
 
   return (
     <>
-      <button
-        id="play-song-btn"
-        onClick={() => {
-          playSong();
-          setIsPlaying(true);
-          setTimeout(() => {
-            player.togglePlay();
-            setIsPlaying(false);
-          }, trackTime);
-        }}
-      >
-        <img src="./Img/play-button.png" alt="Play Button" />
-      </button>
+      {playerReady && (
+        <button
+          id="play-song-btn"
+          onClick={() => {
+            playSong();
+            setIsPlaying(true);
+            setTimeout(() => {
+              player.togglePlay();
+              setIsPlaying(false);
+            }, trackTime);
+          }}
+        >
+          <img src="./Img/play-button.png" alt="Play Button" />
+        </button>
+      )}
     </>
   );
 };
