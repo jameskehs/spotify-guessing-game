@@ -8,7 +8,7 @@
   margin: 25px;
 }
 
-.guess {
+#attempts-container .guess {
   margin: 0 5px;
   background-color: #eee;
   height: 25px;
@@ -63,13 +63,13 @@
   }
 }
 
-.guess.wrong {
+#attempts-container .guess.wrong {
   background-color: #ff2828;
   -webkit-animation: wiggle 300ms ease-in-out forwards;
           animation: wiggle 300ms ease-in-out forwards;
 }
 
-.guess.correct {
+#attempts-container .guess.correct {
   background-color: #1cb31c;
   -webkit-animation: wiggle 300ms ease-in-out forwards;
           animation: wiggle 300ms ease-in-out forwards;

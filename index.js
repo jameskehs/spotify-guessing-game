@@ -22,8 +22,11 @@ app.post("/refresh", (req, res) => {
 
   spotifyApi
     .refreshAccessToken()
-    .then((data) => {})
+    .then((data) => {
+      res.json({ accessToken: data.body.access_token });
+    })
     .catch((err) => {
+      console.log(err);
       res.sendStatus(400);
     });
 });

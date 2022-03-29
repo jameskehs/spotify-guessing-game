@@ -1,4 +1,4 @@
-const GuessForm = ({ guess, setGuess, submitGuess }) => {
+const GuessForm = ({ guess, setGuess, submitGuess, isPlaying }) => {
   return (
     <form
       id="guess-form"
@@ -14,8 +14,11 @@ const GuessForm = ({ guess, setGuess, submitGuess }) => {
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
         autoComplete="off"
+        disabled={isPlaying}
       />
-      <button id="submit-guess">Guess</button>
+      <button id="submit-guess" disabled={isPlaying}>
+        Guess
+      </button>
     </form>
   );
 };

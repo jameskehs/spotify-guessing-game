@@ -69,7 +69,12 @@
   }
 }
 
-#reveal-answer-card img {
+#reveal-answer-card h2 {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#reveal-answer-card .album-art {
   height: 250px;
   width: 250px;
 }

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import "./dashboard.css";
+import "./MainGame.css";
 import AttemptCounter from "./Components/AttemptCounter/AttemptCounter";
 import GuessForm from "./Components/GuessForm/GuessForm";
 import PlayButton from "./Components/PlayButton/PlayButton";
 import RevealAnswer from "./Components/RevealAnswer/RevealAnswer";
-
 import axios from "axios";
 
-const MainGame = ({ accessToken }) => {
+const MainGame = ({ accessToken, refreshAccessToken }) => {
   const [selectedTrack, setSelectedTrack] = useState({});
   const [allGuesses, setAllGuesses] = useState([{}, {}, {}, {}, {}]);
   const [attempt, setAttempt] = useState(0);
@@ -20,7 +19,8 @@ const MainGame = ({ accessToken }) => {
   const [player, setPlayer] = useState(undefined);
   const [device_id, setDeviceID] = useState("");
   const [playerReady, setPlayerReady] = useState(false);
-
+  const [isPlaying, setIsPlaying] = useState(false);
+  let totalTracks = undefined;
   //Loads the spotify player, puts player in state
   useEffect(() => {
     const script = document.createElement("script");
@@ -31,7 +31,7 @@ const MainGame = ({ accessToken }) => {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
-        name: "Web Playback SDK",
+        name: "Guess Your Library",
         getOAuthToken: (cb) => {
           cb(accessToken);
         },
@@ -49,8 +49,17 @@ const MainGame = ({ accessToken }) => {
         console.log("Device ID has gone offline", device_id);
       });
 
+      player.addListener("player_state_changed", (state) => {
+        console.log(state);
+      });
+
       player.connect();
     };
+
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      player.disconnect();
+    });
   }, []);
 
   // On initial load, getRandomTrack()
@@ -60,24 +69,32 @@ const MainGame = ({ accessToken }) => {
 
   //Sends request to get the total amount of tracks in a users library, then uses the total to make a request to grab a single random track
   async function getRandomTrack() {
-    if (!accessToken) return;
-    const {
-      data: { total },
-    } = await axios.get("https://api.spotify.com/v1/me/tracks?limit=1", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    console.log(total);
-    const {
-      data: {
-        items: [{ track }],
-      },
-    } = await axios.get(
-      `https://api.spotify.com/v1/me/tracks?limit=1&offset=${Math.floor(
-        Math.random() * total
-      )}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
-    setSelectedTrack(track);
+    try {
+      if (!accessToken) return;
+      if (totalTracks === undefined) {
+        const {
+          data: { total },
+        } = await axios.get("https://api.spotify.com/v1/me/tracks?limit=1", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        totalTracks = total;
+      }
+      const {
+        data: {
+          items: [{ track }],
+        },
+      } = await axios.get(
+        `https://api.spotify.com/v1/me/tracks?limit=1&offset=${Math.floor(
+          Math.random() * totalTracks
+        )}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setSelectedTrack(track);
+    } catch (e) {
+      if (e.response.data.error.message === "The access token expired") {
+        refreshAccessToken();
+      }
+    }
   }
 
   // Removes punctuation, spacing, and lowercases user guess and correct answer. Compares guess to answer. Updates allGuesses array with "guess" and "Correct".
@@ -143,11 +160,34 @@ const MainGame = ({ accessToken }) => {
       playerInstance: new window.Spotify.Player({ name: "Guessing Game" }),
       spotify_uri: selectedTrack.uri,
     });
+    blockControls();
+  }
+
+  function blockControls() {
+    navigator.mediaSession.metadata = new MediaMetadata({});
+    navigator.mediaSession.setActionHandler("play", function () {
+      return;
+    });
+    navigator.mediaSession.setActionHandler("pause", function () {
+      return;
+    });
+    navigator.mediaSession.setActionHandler("seekbackward", function () {
+      /* Code excerpted. */
+    });
+    navigator.mediaSession.setActionHandler("seekforward", function () {
+      /* Code excerpted. */
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", function () {
+      /* Code excerpted. */
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", function () {
+      /* Code excerpted. */
+    });
   }
 
   //Resets all game states back to initial and chooses new song
   function resetGame() {
-    player.togglePlay();
+    player.pause();
     getRandomTrack();
     setAllGuesses([{}, {}, {}, {}, {}]);
     setAttempt(0);
@@ -168,11 +208,14 @@ const MainGame = ({ accessToken }) => {
             player={player}
             playSong={playSong}
             playerReady={playerReady}
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
           />
           <GuessForm
             submitGuess={submitGuess}
             guess={guess}
             setGuess={setGuess}
+            isPlaying={isPlaying}
           />
         </div>
       )}

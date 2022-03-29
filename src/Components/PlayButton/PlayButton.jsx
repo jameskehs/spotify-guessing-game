@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const PlayButton = ({
   trackTime,
-  selectedTrack,
   playSong,
   playerReady,
   player,
+  isPlaying,
+  setIsPlaying,
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-
   //Start/stop animation on play button
   useEffect(() => {
     if (isPlaying) {
@@ -34,7 +33,7 @@ const PlayButton = ({
             playSong();
             setIsPlaying(true);
             setTimeout(() => {
-              player.togglePlay();
+              player.pause();
               setIsPlaying(false);
             }, trackTime);
           }}

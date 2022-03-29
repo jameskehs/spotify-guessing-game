@@ -12,7 +12,7 @@
   width: 100vw;
 }
 
-#play-song-btn {
+#main-game #play-song-btn {
   background-color: #1ed760;
   border: none;
   border-radius: 100%;
@@ -61,7 +61,7 @@
   }
 }
 
-#play-song-btn img {
+#main-game #play-song-btn img {
   height: 75px;
   width: 75px;
   margin-left: 10px;
@@ -71,12 +71,12 @@
           user-select: none;
 }
 
-#play-song-btn:hover {
+#main-game #play-song-btn:hover {
   background-color: #1ab952;
   cursor: pointer;
 }
 
-#guess-form {
+#main-game #guess-form {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -86,24 +86,38 @@
   width: 100%;
 }
 
-#guess-input {
+#main-game #guess-form #guess-input {
   border: none;
   padding: 25px;
   font-size: 26px;
   background-color: #eee;
+  -webkit-transition: background-color 400ms ease;
+  transition: background-color 400ms ease;
 }
 
-#submit-guess {
+#main-game #guess-form #guess-input:disabled {
+  background-color: #adadad;
+}
+
+#main-game #guess-form #submit-guess {
   background-color: #1ed760;
   padding: 25px;
   color: #fff;
   font-size: 26px;
   border: none;
+  -webkit-transition: background-color 400ms ease;
+  transition: background-color 400ms ease;
 }
 
-#submit-guess:hover {
+#main-game #guess-form #submit-guess:hover {
   background-color: #1ab952;
   cursor: pointer;
+}
+
+#main-game #guess-form #submit-guess:disabled {
+  background-color: #19a149;
+  cursor: not-allowed;
+  color: #ddd;
 }
 
 #restart-game-container {
@@ -151,4 +165,4 @@
     width: 100%;
   }
 }
-/*# sourceMappingURL=dashboard.css.map */
+/*# sourceMappingURL=MainGame.css.map */
