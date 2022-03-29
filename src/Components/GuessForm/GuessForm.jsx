@@ -13,6 +13,7 @@ const GuessForm = ({ guess, setGuess, submitGuess }) => {
         placeholder="What is the song?"
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
+        autoComplete="off"
       />
       <button id="submit-guess">Guess</button>
     </form>

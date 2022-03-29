@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./dashboard.css";
 import AttemptCounter from "./Components/AttemptCounter/AttemptCounter";
 import GuessForm from "./Components/GuessForm/GuessForm";
-import Player from "./Components/Player/Player";
+import PlayButton from "./Components/PlayButton/PlayButton";
 import RevealAnswer from "./Components/RevealAnswer/RevealAnswer";
 
 import axios from "axios";
@@ -17,32 +17,68 @@ const MainGame = ({ accessToken }) => {
     isOver: false,
     didWin: false,
   });
+  const [player, setPlayer] = useState(undefined);
+  const [device_id, setDeviceID] = useState("");
+  const [playerReady, setPlayerReady] = useState(false);
+
+  //Loads the spotify player, puts player in state
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: "Web Playback SDK",
+        getOAuthToken: (cb) => {
+          cb(accessToken);
+        },
+        volume: 0.5,
+      });
+
+      setPlayer(player);
+
+      player.addListener("ready", ({ device_id }) => {
+        setDeviceID(device_id);
+        setPlayerReady(true);
+      });
+
+      player.addListener("not_ready", ({ device_id }) => {
+        console.log("Device ID has gone offline", device_id);
+      });
+
+      player.connect();
+    };
+  }, []);
+
+  // On initial load, getRandomTrack()
+  useEffect(() => {
+    getRandomTrack();
+  }, []);
 
   //Sends request to get the total amount of tracks in a users library, then uses the total to make a request to grab a single random track
-  useEffect(() => {
-    async function getRandomTrack() {
-      if (!accessToken) return;
-      const {
-        data: { total },
-      } = await axios.get("https://api.spotify.com/v1/me/tracks?limit=1", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      console.log(total);
-      const {
-        data: {
-          items: [{ track }],
-        },
-      } = await axios.get(
-        `https://api.spotify.com/v1/me/tracks?limit=1&offset=${Math.floor(
-          Math.random() * total
-        )}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-      setSelectedTrack(track);
-    }
-
-    getRandomTrack();
-  }, [accessToken]);
+  async function getRandomTrack() {
+    if (!accessToken) return;
+    const {
+      data: { total },
+    } = await axios.get("https://api.spotify.com/v1/me/tracks?limit=1", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(total);
+    const {
+      data: {
+        items: [{ track }],
+      },
+    } = await axios.get(
+      `https://api.spotify.com/v1/me/tracks?limit=1&offset=${Math.floor(
+        Math.random() * total
+      )}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    setSelectedTrack(track);
+  }
 
   // Removes punctuation, spacing, and lowercases user guess and correct answer. Compares guess to answer. Updates allGuesses array with "guess" and "Correct".
   // "Correct" is not a boolean because the value is used as a CSS classname on the attempt counter, this can be changed to a boolean, we will have to update logic in AttemptCounter.jsx
@@ -64,6 +100,7 @@ const MainGame = ({ accessToken }) => {
       newGuesses[attempt] = { guess, correct: "correct" };
       setAllGuesses(newGuesses);
       setGameStatus({ isOver: true, didWin: true });
+      playSong();
     } else {
       setTrackTime(trackTime + (attempt + 1) * 750);
       newGuesses[attempt] = { guess, correct: "wrong" };
@@ -72,6 +109,7 @@ const MainGame = ({ accessToken }) => {
       if (attempt === 4) {
         setTimeout(() => {
           setGameStatus({ isOver: true, didWin: false });
+          playSong();
           return;
         }, 500);
       }
@@ -79,14 +117,57 @@ const MainGame = ({ accessToken }) => {
     }
   }
 
+  //Makes request to play the selectedTrack uri
+  function playSong() {
+    const play = ({
+      spotify_uri,
+      playerInstance: {
+        _options: {},
+      },
+    }) => {
+      fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ uris: [spotify_uri] }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    };
+    if (player === undefined) return;
+    player.activateElement();
+    play({
+      playerInstance: new window.Spotify.Player({ name: "Guessing Game" }),
+      spotify_uri: selectedTrack.uri,
+    });
+  }
+
+  //Resets all game states back to initial and chooses new song
+  function resetGame() {
+    player.togglePlay();
+    getRandomTrack();
+    setAllGuesses([{}, {}, {}, {}, {}]);
+    setAttempt(0);
+    setTrackTime(2500);
+    setGameStatus({
+      isOver: false,
+      didWin: false,
+    });
+  }
+
   return (
     <>
       {selectedTrack !== undefined && !gameStatus.isOver && (
         <div id="main-game">
-          <Player
-            accessToken={accessToken}
+          <PlayButton
             trackTime={trackTime}
             selectedTrack={selectedTrack}
+            player={player}
+            playSong={playSong}
+            playerReady={playerReady}
           />
           <GuessForm
             submitGuess={submitGuess}
@@ -95,13 +176,11 @@ const MainGame = ({ accessToken }) => {
           />
         </div>
       )}
-      {gameStatus.isOver && (
-        <RevealAnswer selectedTrack={selectedTrack} accessToken={accessToken} />
-      )}
+      {gameStatus.isOver && <RevealAnswer selectedTrack={selectedTrack} />}
       <AttemptCounter allGuesses={allGuesses} />
       {gameStatus.isOver && (
         <div id="restart-game-container">
-          <button id="restart-game-btn" onClick={() => (window.location = "/")}>
+          <button id="restart-game-btn" onClick={() => resetGame()}>
             Play Again
           </button>
         </div>
