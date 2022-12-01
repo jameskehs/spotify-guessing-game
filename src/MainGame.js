@@ -163,6 +163,16 @@ const MainGame = ({ accessToken, refreshAccessToken }) => {
     blockControls();
   }
 
+  function pauseSong() {
+    fetch("https://api.spotify.com/v1/me/player/pause", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
   function blockControls() {
     navigator.mediaSession.metadata = new MediaMetadata({});
     navigator.mediaSession.setActionHandler("play", function () {
@@ -187,7 +197,7 @@ const MainGame = ({ accessToken, refreshAccessToken }) => {
 
   //Resets all game states back to initial and chooses new song
   function resetGame() {
-    player.pause();
+    pauseSong();
     getRandomTrack();
     setAllGuesses([{}, {}, {}, {}, {}]);
     setAttempt(0);
@@ -205,6 +215,7 @@ const MainGame = ({ accessToken, refreshAccessToken }) => {
           <PlayButton
             trackTime={trackTime}
             selectedTrack={selectedTrack}
+            pauseSong={pauseSong}
             player={player}
             playSong={playSong}
             playerReady={playerReady}

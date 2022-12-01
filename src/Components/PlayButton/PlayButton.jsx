@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 const PlayButton = ({
   trackTime,
+  pauseSong,
   playSong,
   playerReady,
   player,
@@ -30,10 +31,11 @@ const PlayButton = ({
         <button
           id="play-song-btn"
           onClick={() => {
+            console.log(trackTime);
             playSong();
             setIsPlaying(true);
-            setTimeout(() => {
-              player.pause();
+            setTimeout(async () => {
+              pauseSong();
               setIsPlaying(false);
             }, trackTime);
           }}
